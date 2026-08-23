@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal Deteksi OSIS - TRPL Polibatam</title>
+  <style>
+    /* --- 1. PENGATURAN TAMPILAN UTAMA (BACKGROUND & FONT) --- */
+    body {
+      background: linear-gradient(135deg, #0f172a, #1e3a8a); /* Background gradasi gelap futuristik */
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+
+    /* --- 2. KOTAK APLIKASI UTAMA (INTERFACE CARD) --- */
+    .app-card {
+      background: rgba(255, 255, 255, 0.05); /* Efek kaca transparan (Glassmorphism) */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 40px 30px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+      animation: munculHalus 0.6s ease-out forwards;
+    }
+
+    /* Spasi untuk logo di paling atas */
+    .app-logo {
+      margin-bottom: 15px;
+      filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    }
+
+    /* Gaya tulisan judul di bawah logo */
+    .app-title {
+      font-size: 24px;
+      font-weight: 700;
+      color: #38bdf8; /* Warna biru muda terang agar kontras */
+      margin: 0 0 10px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .app-subtitle {
+      font-size: 14px;
+      color: #94a3b8;
+      margin: 0 0 30px 0;
+      line-height: 1.5;
+    }
+
+    /* --- 3. TOMBOL DAN INPUT INTERFACE --- */
+    button {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+    }
+
+    /* Tombol Mulai di halaman depan */
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #2563eb);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #38bdf8, #3b82f6);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Tombol Periksa di halaman kedua */
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    /* Kotak Tempat Mengetik Nama */
+    .input-field {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      color: white;
+      outline: none;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .input-field:focus {
+      border-color: #38bdf8;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+    }
+
+    /* --- 4. KOTAK HASIL DETEKSI (OUTPUT) --- */
+    .hasil-box {
+      margin-top: 25px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.6;
+      display: none;
+      text-align: left;
+      animation: slideDown 0.4s ease-out forwards;
+    }
+
+    /* --- 5. ANIMASI-ANIMASI HALUS --- */
+    @keyframes munculHalus {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-15px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- KOTAK UTAMA APLIKASI -->
+  <div class="app-card">
+    
+    <!-- PILAR 1: LOGO DI PALING ATAS -->
+    <img src="tb.png" alt="Logo tb" width="400" class="app-logo">
+
+    <!-- PILAR 2: JUDUL DI BAWAH LOGO -->
+    <h1 class="app-title" id="judulDinamis">Portal Deteksi Mahasiswa</h1>
+    <p class="app-subtitle" id="subJudulDinamis">Sistem simulasi rekayasa perangkat lunak untuk mengecek status kepengurusan sekolah.</p>
+
+    <!-- PILAR 3: AREA INTERAKSI YANG BERGANTI-GANTI -->
+    
+    <!-- Tampilan Awal: Hanya Tombol Mulai -->
+    <div id="kontenMulai">
+      <button onclick="bukaFormInput()" class="btn-primary">Mulai Deteksi Status 🚀</button>
+    </div>
+
+    <!-- Tampilan Kedua: Form Input Nama (Awalnya disembunyikan) -->
+    <div id="kontenInput" style="display: none;">
+      <input type="text" id="inputNamaOsis" class="input-field" placeholder="Ketik nama lengkap kamu...">
+      <button onclick="eksekusiCekOsis()" class="btn-success">Periksa Jabatan</button>
+      
+      <!-- Wadah untuk Menampilkan Hasil Pencarian -->
+      <div id="hasilDeteksi" class="hasil-box"></div>
+    </div>
+
+  </div>
+
+  <!-- --- 6. LOGIKA PROGRAM (JAVASCRIPT) --- -->
+  <script>
+    // Fungsi untuk mengubah tampilan halaman depan ke halaman input nama
+    function bukaFormInput() {
+      // Ubah Judul & Subjudul agar sesuai dengan halaman kedua
+      document.getElementById("judulDinamis").innerText = "Deteksi Anggota OSIS";
+      document.getElementById("subJudulDinamis").innerText = "Silakan masukkan nama di bawah ini untuk memulai pemindaian database.";
+      
+      // Sembunyikan tombol mulai, lalu munculkan form pengetikan nama
+      document.getElementById("kontenMulai").style.display = "none";
+      document.getElementById("kontenInput").style.display = "block";
+    }
+
+    // Fungsi utama untuk memproses pencarian nama dan jabatan OSIS
+    function eksekusiCekOsis() {
+      // Database buatan (Array of Objects) - Silakan ganti dengan nama teman-temanmu
+      let dataOsis = [
+        { nama: "budi", jabatan: "Ketua OSIS" },
+        { nama: "andi", jabatan: "Wakil Ketua OSIS" },
+        { nama: "siti", jabatan: "Sekretaris Umum" },
+        { nama: "rudi", jabatan: "Bendahara 1" },
+        { nama: "ani", jabatan: "Ketua Sekbid Komunikasi & Humas" }
+      ];
+
+      let inputNama = document.getElementById("inputNamaOsis").value;
+      let hasilDiv = document.getElementById("hasilDeteksi");
+
+      // Validasi jika inputan kosong
+      if (inputNama.trim() === "") {
+        hasilDiv.style.display = "block";
+        hasilDiv.style.background = "rgba(239, 68, 68, 0.2)";
+        hasilDiv.style.border = "1px solid #ef4444";
+        hasilDiv.style.color = "#fca5a5";
+        hasilDiv.innerHTML = "⚠️ <b>Error:</b> Nama tidak boleh kosong! Mohon isi terlebih dahulu.";
+        return;
+      }
+
+      let namaBersih = inputNama.toLowerCase().trim();
+      let anggotaKetemu = null;
+
+      // Logika Perulangan (Looping) untuk mencari data
+      for (let i = 0; i < dataOsis.length; i++) {
+        if (dataOsis[i].nama === namaBersih) {
+          anggotaKetemu = dataOsis[i];
+          break; // Berhenti jika nama sudah cocok
+        }
+      }
+
+      hasilDiv.style.display = "block";
+
+      // Percabangan (If-Else) untuk menampilkan hasil ke layar interface
+      if (anggotaKetemu !== null) {
+        // Tampilan jika anak OSIS (Warna Hijau)
+        hasilDiv.style.background = "rgba(16, 185, 129, 0.15)";
+        hasilDiv.style.border = "1px solid #10b981";
+        hasilDiv.style.color = "#34d399";
+        hasilDiv.innerHTML = `🟢 <b>HASIL PEMINDAIAN:</b><br>
+                              • Nama: <span style="color:white">${inputNama}</span><br>
+                              • Status: <b style="color:#34d399">Anggota OSIS Aktif ✅</b><br>
+                              • Jabatan: <i style="color:white">${anggotaKetemu.jabatan}</i>`;
+      } else {
+        // Tampilan jika BUKAN anak OSIS (Warna Abu-Abu/Merah Muda Tipis)
+        hasilDiv.style.background = "rgba(148, 163, 184, 0.15)";
+        hasilDiv.style.border = "1px solid #94a3b8";
+        hasilDiv.style.color = "#cbd5e1";
+        hasilDiv.innerHTML = `❌ <b>HASIL PEMINDAIAN:</b><br>
+                              • Nama: <span style="color:white">${inputNama}</span><br>
+                              • Status: Bukan Pengurus OSIS<br>
+                              • Keterangan: Nama tidak terdaftar di kepengurusan sekolah.`;
+      }
+    }
+  </script>
+
+</body>
+</html>
