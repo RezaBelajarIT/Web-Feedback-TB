@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <body>
+
+  <!-- ================= LAYAR UTAMA (WELCOME SCREEN) ================= -->
+  <div id="layarUtama" class="welcome-container">
+    <!-- 1. LOGO PALING ATAS -->
+    <img src="tb.png" alt="Logo tb" width="400" style="margin-bottom: 15px;">
+
+    <!-- 2. JUDUL DI BAWAH LOGO -->
+    <h1>Portal Deteksi Calon Mahasiswa TRPL</h1>
+    <p style="color: #475569; margin-bottom: 30px;">Selamat datang! Silakan klik tombol di bawah untuk memulai pelacakan status kepengurusan sekolah.</p>
+
+    <!-- 3. TOMBOL UNTUK MULAI INTERAKSI -->
+    <button onclick="mulaiInteraksi()" class="btn-mulai">Mulai Sekarang 🚀</button>
+  </div>
+
+
+  <!-- ================= LAYAR KEDUA (KOTAK INPUT NAMA) ================= -->
+  <!-- Awalnya kotak ini kita sembunyikan dulu menggunakan style="display: none;" -->
+  <div id="layarInput" class="login-card" style="display: none;">
+    <h2>Sistem Deteksi Anggota OSIS</h2>
+    <p>Masukkan nama untuk memeriksa status jabatan kepengurusan</p>
+    
+    <div class="input-group">
+      <input type="text" id="inputNamaOsis" placeholder="Ketik nama lengkap kamu...">
+    </div>
+    
+    <button onclick="cekOsisModern()">Periksa Status</button>
+    
+    <!-- Kotak Hasil Deteksi -->
+    <div id="hasilDeteksi" class="hasil-box"></div>
+  </div>
+
+
+  <!-- ================= LOGIKANYA (JAVASCRIPT) ================= -->
+  <script>
+    // FUNGSI 1: Berjalan saat tombol "Mulai Sekarang" diklik
+    function mulaiInteraksi() {
+      // Sembunyikan Layar Utama
+      document.getElementById("layarUtama").style.display = "none";
+      
+      // Munculkan Kotak Input Nama
+      document.getElementById("layarInput").style.display = "block";
+    }
+
+    // FUNGSI 2: Berjalan saat tombol "Periksa Status" di dalam kotak diklik
+    function cekOsisModern() {
+      let dataOsis = [
+        { nama: "budi", jabatan: "Ketua OSIS" },
+        { nama: "andi", jabatan: "Wakil Ketua OSIS" },
+        { nama: "siti", jabatan: "Sekretaris" },
+        { nama: "rudi", jabatan: "Bendahara" }
+      ];
+
+      let inputNama = document.getElementById("inputNamaOsis").value;
+      let hasilDiv = document.getElementById("hasilDeteksi");
+
+      if (inputNama.trim() === "") {
+        hasilDiv.style.display = "block";
+        hasilDiv.style.background = "#fee2e2";
+        hasilDiv.style.color = "#991b1b";
+        hasilDiv.innerHTML = "⚠️ Nama tidak boleh kosong!";
+        return;
+      }
+
+      let namaBersih = inputNama.toLowerCase().trim();
+      let anggotaKetemu = null;
+
+      for (let i = 0; i < dataOsis.length; i++) {
+        if (dataOsis[i].nama === namaBersih) {
+          anggotaKetemu = dataOsis[i];
+          break;
+        }
+      }
+
+      hasilDiv.style.display = "block";
+
+      if (anggotaKetemu !== null) {
+        hasilDiv.style.background = "#dcfce7";
+        hasilDiv.style.color = "#166534";
+        hasilDiv.innerHTML = `🟢 <b>${inputNama}</b><br>Status: Anggota OSIS Aktif<br>Jabatan: ${anggotaKetemu.jabatan}`;
+      } else {
+        hasilDiv.style.background = "#f1f5f9";
+        hasilDiv.style.color = "#475569";
+        hasilDiv.innerHTML = `❌ <b>${inputNama}</b><br>Status: Bukan Pengurus OSIS`;
+      }
+    }
+  </script>
+
+</body>
+
+</body>
+</html>
