@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Saluran masukan siswa untuk membantu sekolah berkembang.">
+    <title>Nara | E-Feedback OSIS Tunas Bangsa</title>
+    <style>
+        :root {
+            --ink: #17243d;
+            --muted: #60708a;
+            --paper: #f3f7ff;
+            --panel: #ffffff;
+            --green: #1769d1;
+            --green-dark: #0d47a1;
+            --blue: #1769d1;
+            --lime: #b9d5ff;
+            --line: #d7e3f5;
+            --shadow: 0 24px 70px rgba(23, 74, 145, 0.13);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            color: var(--ink);
+            background: var(--paper);
+            font-family: Georgia, 'Times New Roman', serif;
+        }
+
+        body::before {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            content: '';
+            opacity: .38;
+            background-image: radial-gradient(#b1c9eb 1px, transparent 1px);
+            background-size: 24px 24px;
+            mask-image: linear-gradient(to bottom, black, transparent 75%);
+        }
+
+        .shell {
+            width: min(1120px, calc(100% - 40px));
+            min-height: 100vh;
+            margin: 0 auto;
+            padding: 28px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .topbar, .footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .brand { display: flex; align-items: center; gap: 11px; font: 700 15px Arial, sans-serif; letter-spacing: .02em; }
+        .brand-mark { width: 70px; height: 70px; display: grid; place-items: center; color: var(--green-dark); background: transparent; border-radius: 0; font-size: 19px; overflow: hidden; }
+        .brand-mark img { width: 100%; height: 100%; object-fit: contain; }
+        .top-note, .footer { color: var(--muted); font: 12px Arial, sans-serif; }
+
+        main { flex: 1; display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(40px, 8vw, 120px); padding: 60px 7vw; }
+        .eyebrow { margin: 0 0 20px; color: var(--green); font: 700 12px Arial, sans-serif; letter-spacing: .16em; text-transform: uppercase; }
+        h1 { max-width: 550px; margin: 0; font-size: clamp(48px, 6vw, 78px); font-weight: 400; line-height: .98; letter-spacing: -.045em; }
+        h1 em { color: var(--green); font-style: normal; }
+        .intro { max-width: 440px; margin: 26px 0 34px; color: var(--muted); font: 17px/1.65 Arial, sans-serif; }
+        .trust-row { display: flex; gap: 14px; align-items: center; color: var(--muted); font: 12px Arial, sans-serif; }
+        .trust-dot { width: 9px; height: 9px; background: var(--lime); border: 2px solid var(--green); border-radius: 50%; }
+
+        .feedback-card { padding: clamp(26px, 4vw, 44px); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow); }
+        .card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 28px; }
+        .step { color: var(--green); font: 700 11px Arial, sans-serif; letter-spacing: .12em; }
+        h2 { margin: 5px 0 0; font-size: 28px; font-weight: 400; }
+        .page-hidden { display: none !important; }
+        .field-label { display: block; margin-bottom: 9px; color: var(--muted); font: 700 11px Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; }
+        .feedback-name, textarea { width: 100%; padding: 13px 16px; color: var(--ink); background: #f7faff; border: 1px solid var(--line); border-radius: 3px; outline: none; font: 16px/1.55 Arial, sans-serif; transition: border-color .2s, box-shadow .2s; }
+        .feedback-name { margin-bottom: 20px; }
+        textarea { min-height: 175px; resize: vertical; }
+        .feedback-name:focus, textarea:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23, 105, 209, .12); }
+        .card-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+        button { border: 0; cursor: pointer; font: 700 13px Arial, sans-serif; transition: transform .2s, background .2s; }
+        button:hover { transform: translateY(-2px); }
+        .primary, .secondary { padding: 13px 19px; border-radius: 3px; }
+        .primary { color: #fff; background: var(--green); }
+        .primary:hover { background: var(--green-dark); }
+        .secondary { color: var(--blue); background: transparent; border: 1px solid var(--line); }
+        .secondary:hover { background: #e3eeff; }
+        .back { padding: 0; color: var(--muted); background: none; }
+        .back:hover { color: var(--green); transform: none; }
+        .privacy { margin: 18px 0 0; color: var(--muted); font: 11px/1.5 Arial, sans-serif; }
+        .footer { padding-top: 22px; border-top: 1px solid var(--line); }
+        .footer span { color: var(--green); font-weight: 700; }
+        .fade-in { animation: rise .45s ease both; }
+        @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+        .nara-launcher { position: fixed; right: 26px; bottom: 46px; z-index: 5; display: flex; align-items: center; gap: 10px; padding: 12px 16px 12px 12px; color: #fff; background: var(--green-dark); border-radius: 999px; box-shadow: 0 12px 30px rgba(13, 71, 161, .24); }
+        .nara-launcher:hover { background: var(--green); }
+        .nara-avatar { width: 31px; height: 31px; display: grid; place-items: center; color: var(--green-dark); background: var(--lime); border-radius: 50%; font: 700 12px Arial, sans-serif; }
+        .nara-chat { position: fixed; right: 26px; bottom: 108px; z-index: 4; width: min(380px, calc(100vw - 32px)); overflow: hidden; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 24px 70px rgba(23, 74, 145, .2); animation: rise .25s ease both; }
+        .nara-chat[hidden] { display: none; }
+        .nara-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; color: #fff; background: var(--green-dark); }
+        .nara-title { display: flex; align-items: center; gap: 10px; font: 700 14px Arial, sans-serif; }
+        .nara-status { margin: 3px 0 0 41px; color: #cfe1ff; font: 11px Arial, sans-serif; }
+        .nara-close { padding: 2px 5px; color: #fff; background: transparent; font-size: 20px; line-height: 1; }
+        .nara-close:hover { transform: none; color: var(--lime); }
+        .nara-messages { display: flex; flex-direction: column; gap: 10px; height: 290px; padding: 16px; overflow-y: auto; background: #f7faff; }
+        .nara-message { max-width: 84%; padding: 10px 12px; border-radius: 4px 12px 12px 12px; color: var(--ink); background: #e5efff; font: 13px/1.5 Arial, sans-serif; }
+        .nara-message.user { align-self: flex-end; color: #fff; background: var(--green); border-radius: 12px 4px 12px 12px; }
+        .nara-suggestions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; padding: 12px 16px 16px; background: #f7faff; }
+        .nara-suggestion { flex: 0 0 auto; padding: 7px 10px; color: var(--green-dark); background: #fff; border: 1px solid var(--line); border-radius: 999px; font-size: 11px; }
+        .nara-suggestion:hover { background: var(--lime); transform: none; }
+        .nara-suggestion:disabled { cursor: wait; opacity: .55; }
+        .nara-form { display: flex; gap: 8px; padding: 12px 16px 16px; background: #f7faff; border-top: 1px solid var(--line); }
+        .nara-input { min-width: 0; flex: 1; padding: 10px 12px; color: var(--ink); background: #fff; border: 1px solid var(--line); border-radius: 3px; outline: none; font: 13px/1.4 Arial, sans-serif; }
+        .nara-input:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(23, 105, 209, .12); }
+        .nara-send { flex: 0 0 auto; padding: 10px 13px; color: #fff; background: var(--green); border-radius: 3px; }
+        .nara-send:hover { background: var(--green-dark); }
+        .nara-send:disabled { cursor: wait; opacity: .55; }
+
+        @media (max-width: 760px) {
+            .shell { width: min(100% - 28px, 560px); padding-top: 20px; }
+            .top-note { display: none; }
+            main { display: block; padding: 70px 0 46px; }
+            h1 { font-size: clamp(48px, 15vw, 70px); }
+            .intro { font-size: 15px; }
+            .feedback-card { margin-top: 44px; }
+            .footer { align-items: flex-start; flex-direction: column; gap: 8px; }
+            .nara-launcher { right: 16px; bottom: 34px; }
+            .nara-chat { right: 16px; bottom: 94px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="shell">
+        <header class="topbar">
+            <div class="brand"><div class="brand-mark"><img src="tb.png" alt="Logo Tunas Bangsa"></div> NARA</div>
+            <div class="top-note">Naungan dan Apresiasi Siswa</div>
+        </header>
+
+        <main>
+            <section class="intro-section">
+                <p class="eyebrow">E-feedback OSIS tunas bangsa</p>
+                <h1>Satu suara,<br><em>banyak perubahan.</em></h1>
+                <p class="intro">Ceritakan pengalaman, ide, atau hal yang bisa kami perbaiki. Setiap masukan dibaca sebagai langkah menuju sekolah yang lebih baik.</p>
+                <div class="trust-row"><span class="trust-dot"></span> Masukan diteruskan secara langsung dan bertanggung jawab</div>
+            </section>
+
+            <section class="feedback-card" aria-live="polite">
+                <div id="page-beranda" class="fade-in">
+                    <div class="card-head"><div><div class="step">01 / 02</div><h2>Mulai dari sini</h2></div><span aria-hidden="true">&#8599;</span></div>
+                    <p class="intro">Tidak perlu akun. Cukup tulis namamu dan masukan yang ingin kamu sampaikan.</p>
+                    <button class="primary" type="button" onclick="pindahHalaman('saran')">Tulis masukan &#8594;</button>
+                </div>
+
+                <div id="page-saran" class="page-hidden fade-in">
+                    <div class="card-head"><div><div class="step">02 / 02</div><h2>Tulis masukan</h2></div><button class="back" type="button" onclick="pindahHalaman('beranda')">&#8592; Kembali</button></div>
+                    <label class="field-label" for="input-nama">Nama</label>
+                    <input class="feedback-name" id="input-nama" type="text" placeholder="Tulis namamu" maxlength="80" autocomplete="name">
+                    <label class="field-label" for="input-saran">Pesanmu</label>
+                    <textarea id="input-saran" placeholder="Bagikan cerita atau idemu di sini..." maxlength="1000"></textarea>
+                    <div class="card-actions">
+                        <button class="primary" type="button" onclick="kirimFeedback()">Kirim masukan &#8594;</button>
+                    </div>
+                    <p class="privacy">Masukanmu disimpan secara aman dan hanya digunakan untuk membantu sekolah berkembang.</p>
+                </div>
+            </section>
+        </main>
+
+        <footer class="footer"><div><span>NARA</span> &copy; 2026</div><div>Untuk sekolah yang mau mendengar.</div></footer>
+    </div>
+
+    <button class="nara-launcher" id="nara-launcher" type="button" aria-expanded="false" aria-controls="nara-chat">
+        <span class="nara-avatar" aria-hidden="true">N</span> Tanya NARA
+    </button>
+    <section class="nara-chat" id="nara-chat" aria-label="Chat dengan NARA" hidden>
+        <header class="nara-head">
+            <div>
+                <div class="nara-title"><span class="nara-avatar" aria-hidden="true">N</span> NARA</div>
+                <div class="nara-status">Asisten suara siswa</div>
+            </div>
+            <button class="nara-close" id="nara-close" type="button" aria-label="Tutup chat">&times;</button>
+        </header>
+        <div class="nara-messages" id="nara-messages" aria-live="polite">
+            <div class="nara-message">Halo, aku NARA. Aku bisa membantu menjelaskan cara mengirim masukan atau mendengarkan idemu.</div>
+        </div>
+        <div class="nara-suggestions" aria-label="Pertanyaan untuk NARA">
+            <button class="nara-suggestion" type="button" data-question="Bagaimana cara kirim masukan?">Cara kirim masukan</button>
+            <button class="nara-suggestion" type="button" data-question="Aku punya ide untuk sekolah">Aku punya ide</button>
+            <button class="nara-suggestion" type="button" data-question="Kamu bisa dengarkan curhatku?">Aku ingin curhat</button>
+            <button class="nara-suggestion" type="button" data-question="Aku kurang suka dengan salah satu proker OSIS">Keluhan proker OSIS</button>
+        </div>
+        <form class="nara-form" id="nara-form">
+            <input class="nara-input" id="nara-input" type="text" placeholder="Ketik pesan untuk NARA..." autocomplete="off" maxlength="1000" aria-label="Pesan untuk NARA">
+            <button class="nara-send" id="nara-send" type="submit">Kirim</button>
+        </form>
+    </section>
+
+    <script>
+        const SUPABASE_URL = 'https://cqnmkupqukodcnnfwruq.supabase.co/rest/v1/';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNxbm1rdXBxdWtvZGNubmZ3cnVxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc0ODg1ODMsImV4cCI6MjEwMzA2NDU4M30.RLg3ikPCYpCWCoOZrXp58CMzKjFTGbz8I8ztku9KWZg';
+
+        function pindahHalaman(target) {
+            document.getElementById('page-beranda').classList.toggle('page-hidden', target === 'saran');
+            document.getElementById('page-saran').classList.toggle('page-hidden', target !== 'saran');
+        }
+
+        function dapatkanTeksSaran() {
+            const namaInput = document.getElementById('input-nama');
+            const input = document.getElementById('input-saran');
+            const nama = namaInput.value.trim();
+            const teks = input.value.trim();
+            if (!nama) {
+                namaInput.focus();
+                alert('Nama wajib diisi.');
+                return null;
+            }
+            if (!teks) {
+                input.focus();
+                alert('Kolom masukan tidak boleh kosong.');
+                return null;
+            }
+            return { nama, pesan: teks };
+        }
+
+        function resetMasukan() {
+            document.getElementById('input-nama').value = '';
+            document.getElementById('input-saran').value = '';
+        }
+
+        async function kirimFeedback() {
+            const masukan = dapatkanTeksSaran();
+            if (!masukan) return;
+
+            if (SUPABASE_URL.startsWith('GANTI_') || SUPABASE_ANON_KEY.startsWith('GANTI_')) {
+                alert('Koneksi database belum diatur. Masukkan URL dan anon key Supabase terlebih dahulu.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${SUPABASE_URL}feedback`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'return=minimal'
+                    },
+                    body: JSON.stringify(masukan)
+                });
+
+                if (!response.ok) throw new Error('Pengiriman gagal');
+
+                alert('Terima kasih. Masukanmu berhasil dikirim.');
+                resetMasukan();
+                pindahHalaman('beranda');
+            } catch (error) {
+                alert('Masukan belum berhasil dikirim. Periksa koneksi database.');
+            }
+        }
+
+        const naraLauncher = document.getElementById('nara-launcher');
+        const naraChat = document.getElementById('nara-chat');
+        const naraClose = document.getElementById('nara-close');
+        const naraMessages = document.getElementById('nara-messages');
+        const naraSuggestions = document.querySelectorAll('.nara-suggestion');
+        const naraForm = document.getElementById('nara-form');
+        const naraInput = document.getElementById('nara-input');
+        const naraSend = document.getElementById('nara-send');
+        let naraSedangMenjawab = false;
+
+        function toggleNara(open) {
+            naraChat.hidden = !open;
+            naraLauncher.setAttribute('aria-expanded', String(open));
+            if (open) naraInput.focus();
+        }
+
+        function tambahPesan(teks, dariPengguna) {
+            const message = document.createElement('div');
+            message.className = `nara-message${dariPengguna ? ' user' : ''}`;
+            message.textContent = teks;
+            naraMessages.appendChild(message);
+            naraMessages.scrollTop = naraMessages.scrollHeight;
+            return message;
+        }
+
+        async function prosesPesan(teks) {
+            const pesan = teks.trim();
+            if (!pesan || naraSedangMenjawab) return;
+            tambahPesan(pesan, true);
+            naraInput.value = '';
+            naraSedangMenjawab = true;
+            naraSuggestions.forEach((button) => { button.disabled = true; });
+            naraInput.disabled = true;
+            naraSend.disabled = true;
+            const statusMessage = tambahPesan('NARA sedang mengetik...', false);
+            statusMessage.classList.add('nara-loading');
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: pesan })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || 'Permintaan gagal');
+                statusMessage.remove();
+                tambahPesan(result.reply, false);
+            } catch (error) {
+                statusMessage.remove();
+                tambahPesan(`Maaf, NARA belum bisa menjawab. ${error.message}`, false);
+            } finally {
+                naraSedangMenjawab = false;
+                naraSuggestions.forEach((button) => { button.disabled = false; });
+                naraInput.disabled = false;
+                naraSend.disabled = false;
+                naraInput.focus();
+            }
+        }
+
+        naraLauncher.addEventListener('click', () => toggleNara(naraChat.hidden));
+        naraClose.addEventListener('click', () => toggleNara(false));
+        naraSuggestions.forEach((button) => {
+            button.addEventListener('click', () => prosesPesan(button.dataset.question));
+        });
+        naraForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            prosesPesan(naraInput.value);
+        });
+    </script>
+</body>
+</html>
