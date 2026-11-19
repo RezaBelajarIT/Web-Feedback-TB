@@ -1,9 +1,0 @@
-{
-  "name": "nara-local",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Server lokal untuk asisten NARA",
-  "scripts": {
-    "start": "node server.js"
-  }
-}
